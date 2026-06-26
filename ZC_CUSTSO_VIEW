@@ -1,0 +1,18 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Consumption View of Custom SO View'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+  serviceQuality: #X,
+  sizeCategory: #S,
+  dataClass: #MIXED
+}
+define root view entity ZC_CUSTSO_VIEW
+  as select from ZI_CUSTSO_VIEW
+{
+key Salesorder,
+key Itemno,
+Status,
+Timestamp,
+Statusdesc
+}
