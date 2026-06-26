@@ -1,0 +1,66 @@
+CLASS lhc_zc_custso_view DEFINITION INHERITING FROM cl_abap_behavior_handler.
+  PRIVATE SECTION.
+
+    METHODS get_instance_features FOR INSTANCE FEATURES
+      IMPORTING keys REQUEST requested_features FOR zc_custso_view RESULT result.
+
+    METHODS get_instance_authorizations FOR INSTANCE AUTHORIZATION
+      IMPORTING keys REQUEST requested_authorizations FOR zc_custso_view RESULT result.
+
+    METHODS editstatus FOR MODIFY
+      IMPORTING keys FOR ACTION zc_custso_view~editstatus RESULT result.
+
+ENDCLASS.
+
+CLASS lhc_zc_custso_view IMPLEMENTATION.
+
+  METHOD get_instance_features.
+  ENDMETHOD.
+
+  METHOD get_instance_authorizations.
+  ENDMETHOD.
+
+
+  METHOD editstatus.
+
+    SELECT * FROM zstatus_all INTO TABLE @DATA(lt_engval) WHERE lang = 'E'.
+
+
+    MODIFY ENTITIES OF i_salesordertp
+      ENTITY salesorder
+      UPDATE FIELDS ( zz1_testdata_sdh  )
+      WITH VALUE #( (
+                    %key-salesorder = keys[ 1 ]-salesorder
+                    zz1_testdata_sdh = 'TestingData'
+                  ) )
+      ENTITY salesorderitem
+      UPDATE FIELDS ( zz1_status1_sdi )
+      WITH VALUE #(
+        (
+          %key-salesorder     = keys[ 1 ]-salesorder
+          %key-salesorderitem = keys[ 1 ]-itemno
+          zz1_status1_sdi     = keys[ 1 ]-%param-status
+        )
+      )
+            FAILED   DATA(lt_failed)
+            REPORTED DATA(lt_reported).
+
+
+
+    MODIFY ENTITIES OF zc_custso_view
+    ENTITY zc_custso_view
+    UPDATE FIELDS ( status statusdesc )
+    WITH VALUE #(
+      (
+        %key-salesorder     = keys[ 1 ]-salesorder
+        %key-itemno = keys[ 1 ]-itemno
+        status   = keys[ 1 ]-%param-status
+        statusdesc = lt_engval[ value = keys[ 1 ]-%param-status ]-description
+      )
+    ).
+
+
+
+  ENDMETHOD.
+
+ENDCLASS.
