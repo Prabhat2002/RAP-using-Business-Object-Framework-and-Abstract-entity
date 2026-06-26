@@ -1,0 +1,19 @@
+managed implementation in class zbp_c_custso_view unique;
+//strict ( 2 );
+
+define behavior for ZC_CUSTSO_VIEW //alias <alias_name>
+persistent table zebst_status_log
+lock master
+authorization master ( instance )
+//etag master <field_name>
+{
+  action( features : instance ) EditStatus parameter Zabs_custsoentity result [1] $self;
+  mapping for  ZEBST_STATUS_LOG
+  {
+   Itemno = itemno;
+   Salesorder = salesorder ;
+   Status = status;
+   Statusdesc = statusdesc;
+   Timestamp = timestamp;
+  }
+}
