@@ -1,0 +1,46 @@
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Custom SO Projection View'
+@Metadata.ignorePropagatedAnnotations: true
+
+define root view entity Zproj_CUSTSO_VIEW
+  as projection on ZC_CUSTSO_VIEW
+{
+
+      @UI.facet: [{
+      id: 'SalesData',
+      position: 10,
+      label: 'Sales Order View',
+      purpose: #STANDARD,
+      type: #IDENTIFICATION_REFERENCE
+                  }]
+      @UI.lineItem: [{ position: 10 , type: #FOR_ACTION, dataAction: 'EditStatus' , label: 'Edit Status'}]
+      @Consumption.filter.mandatory: true
+      @Search.defaultSearchElement: true
+      @UI.identification:[{ position: 10 , label: 'Sales Order'}]
+  key Salesorder,
+      @Consumption.filter.mandatory: true
+      @Search.defaultSearchElement: true
+      @UI.lineItem: [{ position: 20 , label: 'Sales Order Item' }]
+      @UI.identification: [{ position: 20 , label: 'Sales Order Item' }]
+  key Itemno,
+      @Consumption.valueHelpDefinition: [{
+         entity: {
+           name: 'ZStatus_VH',  // Your Value Help View
+           element: 'Value'             // Source field for Status
+         },
+         additionalBinding: [{
+           localElement: 'Statusdesc', // Target field in your app
+           element: 'Description',            // Source field from Value Help View
+           usage: #RESULT                     // Passes data on selection
+         }]
+       }]
+      @UI.lineItem: [{ position: 30 , label: 'Sales Order Status' }]
+      @UI.identification: [{ position: 30 , label: 'Sales Order Status' }]
+      Status,
+      @UI.lineItem: [{ position: 40 , label: 'Time Stamp' }]
+      @UI.identification: [{ position: 40 , label: 'Time Stamp' }]
+      Timestamp,
+      @UI.identification: [{ position: 50 , label: 'Status Description' }]
+      @UI.lineItem: [{ position: 50 , label: 'Status Description' }]
+      Statusdesc
+}
