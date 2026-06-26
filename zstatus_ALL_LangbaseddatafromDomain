@@ -1,0 +1,22 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Status in all language'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+  serviceQuality: #X,
+  sizeCategory: #S,
+  dataClass: #MIXED
+}
+define view entity zstatus_ALL as select from  dd07l as DomainValues
+  association to dd07t as _Text on  _Text.domname  = DomainValues.domname
+                                  and _Text.as4local = DomainValues.as4local
+                                  and _Text.valpos   = DomainValues.valpos
+                                  and _Text.as4vers  = DomainValues.as4vers
+{
+  key DomainValues.domname,
+  key DomainValues.domvalue_l as Value,
+  _Text.ddlanguage  as lang,
+  _Text.ddtext as Description
+}
+where DomainValues.domname  = 'ZZ_DO_SOSTATUS'
+  and DomainValues.as4local = 'A'
